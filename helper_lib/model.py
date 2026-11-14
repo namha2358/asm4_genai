@@ -1,5 +1,7 @@
 # helper_lib/model.py — GAN architecture from the assignment spec, plus get_model
 import torch.nn as nn
+from .diffusion import DiffusionModel      # Assignment 4: diffusion model (UNet + noise schedule)
+from .energy import EBM                    # Assignment 4: energy-based model
 
 Z_DIM = 100                  # length of the noise vector fed to the generator
 
@@ -82,9 +84,13 @@ class GAN(nn.Module):
 
 
 def get_model(model_name):
-    """Return the model for model_name; only "GAN" is implemented in this project."""
+    """Return the model for model_name: "GAN" (MNIST), "Diffusion" or "EBM" (CIFAR10, 32x32x3)."""
     if model_name == "GAN":
         model = GAN()
+    elif model_name == "Diffusion":
+        model = DiffusionModel(image_size=32, num_channels=3)
+    elif model_name == "EBM":
+        model = EBM(num_channels=3, image_size=32)
     else:
-        raise ValueError(f"Unknown model_name '{model_name}'. Supported: GAN")
+        raise ValueError(f"Unknown model_name '{model_name}'. Supported: GAN, Diffusion, EBM")
     return model
